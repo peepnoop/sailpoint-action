@@ -1,0 +1,7 @@
+{
+    "name": "test transform",
+    "type": "static",
+    "attributes": {
+        "value": "test transform"
+    }
+}

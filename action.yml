@@ -1,0 +1,21 @@
+name: 'SailPoint API Action'
+description: 'Interact with SailPoint APIs using Python'
+inputs:
+  instance_url:
+    description: 'SailPoint instance URL: https://{tenant}.api.identitynow.com'
+    required: true
+  client_id:
+    description: 'SailPoint API client ID'
+    required: true
+  client_secret:
+    description: 'SailPoint API client secret'
+    required: true
+  action:
+    description: 'Action to perform (e.g., "get_users", "create_identity")'
+    required: true
+outputs:
+  result:
+    description: 'Result of the API call'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
