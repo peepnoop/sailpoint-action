@@ -1,10 +1,22 @@
 # Container image that runs your code
-FROM golang:1.23-alpine
+FROM golang:1.23-alpine as builder
+WORKDIR /workspace
 
-WORKDIR /go/src/app
-COPY . .
+# copy Go Module manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
 
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app
+# cache the dependancies
+RUN go mod download
 
-ENTRYPOINT ["/go/bin/app"]
+COPY ./ ./
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 \
+    go build -a -ldflags '-extldflags "-static"' \
+    -o SailPoint .
+
+# copy to a thin image
+FROM gcr.io/distroless/static:latest 
+WORKDIR /
+COPY --from=builder /workspace/SailPoint .
+ENTRYPOINT ["/SailPoint"]

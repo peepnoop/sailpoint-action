@@ -7,10 +7,16 @@ import (
 	"encoding/json"
 	"os"
 
+	flag "github.com/spf13/pflag"
+
 	sailpoint "github.com/sailpoint-oss/golang-sdk/v2"
 	"github.com/sailpoint-oss/golang-sdk/v2/api_v2024"
 	"github.com/charmbracelet/log"
 
+)
+
+var (
+	sailpointURL, clientID, clientSecret, action, payload string
 )
 
 // ValidatorResult interface
@@ -142,14 +148,7 @@ func validator(action string, payload string) (ValidatorResult, error){
 }
 
 func main() {
-	sailpointURL := os.Getenv("INPUT_SAILPOINT_URL")
-	clientID := os.Getenv("INPUT_CLIENT_ID")
-	clientSecret := os.Getenv("INPUT_CLIENT_SECRET")
-	action := os.Getenv("INPUT_ACTION")
-	payload := os.Getenv("INPUT_PAYLOAD")
-
-
-	// TESTING VALUES REMOVE BEFORE PUSHING
+	parseAndValidateInput()
 
 	// set up the context for the api
 	ctx := context.TODO()
@@ -281,5 +280,28 @@ func main() {
 		log.Info("Transform created successfully", "role", roleObj.Id)
 	} else {
 		log.Error("Unknown action", "action", action)
+	}
+}
+
+func parseAndValidateInput() {
+	flag.StringVar(&sailpointURL, "sailpoint-url", "", "Sailpoint URL")
+	flag.StringVar(&clientID, "client-id", "", "Client ID")
+	flag.StringVar(&clientSecret, "client-secret", "", "Client Secret")
+	flag.StringVar(&action, "action", "", "Action to perform")
+	flag.StringVar(&payload, "payload", "", "Payload for the action")
+	flag.Parse()
+
+
+	if sailpointURL == "" {
+		log.Fatal("Sailpoint URL is required")
+	}
+	if clientID == "" {
+		log.Fatal("Client ID is required")
+	}
+	if clientSecret == "" {
+		log.Fatal("Client Secret is required")
+	}
+	if action == "" {
+		log.Fatal("Action is required")
 	}
 }

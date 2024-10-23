@@ -1,5 +1,6 @@
 name: 'SailPoint API Action'
-description: 'Interact with SailPoint APIs using Python'
+author: "Alec Smith"
+description: 'Interact with SailPoint APIs using SailPoint Golang SDK'
 inputs:
   instance_url:
     description: 'SailPoint instance URL: https://{tenant}.api.identitynow.com'
@@ -11,11 +12,25 @@ inputs:
     description: 'SailPoint API client secret'
     required: true
   action:
-    description: 'Action to perform (e.g., "get_users", "create_identity")'
+    description: 'Action to perform (e.g., "create-source", "delete-transform")'
     required: true
+  payload:
+    description: 'JSON payload for the action'
+    required: false
 outputs:
   result:
     description: 'Result of the API call'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - --instance
+    - ${{ inputs.instance_url }}
+    - --client-id
+    - ${{ inputs.client_id }}
+    - --client-secret
+    - ${{ inputs.client_secret }}
+    - --action
+    - ${{ inputs.action }}
+    - --payload
+    - ${{ inputs.payload }}
