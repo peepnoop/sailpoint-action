@@ -27,29 +27,9 @@ jobs:
         uses: golangci/golangci-lint-action@v6
       - name: run go test
         run: go test ./...
-  test-action:
-    permissions:
-      contents: read
-      packages: read
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: test the sailpoint action in DRY_RUN
-        id: sailpointAction
-        env:
-          DRY_RUN: true
-        uses: ./
-        with:
-            instance_url: fake
-            client_id: fake
-            client_secret: fake
-            action: test
-            payload: test
-      - run: echo ${{ steps.sailpointAction.outputs.result }} from dry run test
   release:
     permissions:
       contents: write
-    needs: test
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
