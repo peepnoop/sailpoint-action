@@ -1,10 +1,14 @@
 module peepnoop/sailpoint-action
 
-go 1.20
+go 1.21
+
+toolchain go1.23.2
 
 require (
 	github.com/charmbracelet/log v0.4.0
-	github.com/sailpoint-oss/golang-sdk/v2 v2.1.13
+	github.com/peepnoop/validators v0.0.0-00010101000000-000000000000
+	github.com/sailpoint-oss/golang-sdk/v2 v2.1.14
+	github.com/spf13/pflag v1.0.5
 )
 
 require (
@@ -29,7 +33,6 @@ require (
 	github.com/spf13/afero v1.9.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.14.0 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
@@ -44,3 +47,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/peepnoop/validators => ./validators
