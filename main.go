@@ -3,8 +3,6 @@ package main
 import (
 
 	"context"
-	"os"
-
 	flag "github.com/spf13/pflag"
 
 	"github.com/charmbracelet/log"
