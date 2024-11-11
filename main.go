@@ -12,8 +12,6 @@ import (
 	"github.com/sailpoint-oss/golang-sdk/v2/api_v2024"
 
 	"github.com/peepnoop/validators"
-
-	"github.com/1password/onepassword-sdk-go"
 )
 
 var (
@@ -35,6 +33,7 @@ func config(sailpointURL string,clientID string,clientSecret string) sailpoint.C
 
 
 func main() {
+
 	// Validate the input
 	parseAndValidateInput()
 
@@ -49,33 +48,8 @@ func main() {
 	// Set up validators factory
 	factory := validators.NewValidatorFactory()
 
-	// TESTING BLOCK NEEDS //
-	// TO BE MOVED TO VALIDATION //
 
-
-	// // get the list of sources for validation if necessary
-	// sources, _, err := apiClient.V2024.SourcesAPI.ListSources(ctx).Execute()
-	// source_info := make(map[string]string)
-
-	// if err != nil {
-	// 	log.Error("Failed to get sources", "err", err)
-	// }
-
-	// // Loop sources and get the id for each source
-	// for _, source := range sources {
-	// 	// append the id and name to a map of source ids and names
-	// 	source_info[source.GetId()] = source.Name
-		
-	// }
-
-	// // DEBUG
-	// log.Debug("Sources", "sources", source_info)
-	// // END DEBUG
-
-	// END TESTING BLOCK //
-
-
-	// Transforms
+	// Actions to preform
 	if action == "create-transform" {
 
 		// pass the payload to the validate function to ensure the transform is valid
@@ -95,9 +69,7 @@ func main() {
 			}
 			log.Info("Transform created successfully", "transform", transformObj.Id)
 		}
-	}
-
-	if action == "update-transform"{
+	} else if action == "update-transform"{
 		// pass the payload to the validate function to ensure the transform is valid
 		result,err := factory.Validate(action,payload)
 
@@ -117,9 +89,7 @@ func main() {
 			}
 			log.Info("Transform updated successfully", "transform", transformObj.Id)
 		}
-	}
-
-	if action == "delete-transform" {
+	} else if action == "delete-transform" {
 		// attempt to delete the transform
 		resp, err := apiClient.V2024.TransformsAPI.DeleteTransform(ctx, payload).Execute()
 
@@ -128,14 +98,7 @@ func main() {
 		}
 
 		log.Info("Transform deleted successfully", "transform", resp.StatusCode)
-	}
-
-	// Sources
-
-	// Identity Profiles
-
-	// Roles
-	if action == "create-role" {
+	} else if action == "create-role" {
 		// pass the payload to the validate function to ensure the transform is valid
 		result,err := factory.Validate(action,payload)
 
@@ -152,12 +115,17 @@ func main() {
 			}
 			log.Info("Transform created successfully", "role", roleObj.Id)
 		}
+	} else if action == "update-role" {
+		log.Error("Not implemented", "action", action)
+	} else if action == "delete-role" {
+		log.Error("Not implemented", "action", action)
 	} else {
 		log.Error("Unknown action", "action", action)
 	}
 }
 
 func parseAndValidateInput() {
+
 	flag.StringVar(&sailpointURL, "sailpoint-url", "", "Sailpoint URL")
 	flag.StringVar(&clientID, "client-id", "", "Client ID")
 	flag.StringVar(&clientSecret, "client-secret", "", "Client Secret")
@@ -165,36 +133,6 @@ func parseAndValidateInput() {
 	flag.StringVar(&payload, "payload", "", "Payload for the action")
 	flag.Parse()
 
-
-	// LOCAL TESTING VALUES
-	// Pull from 1pass
-
-	// 1password setup for local runs
-	token := os.Getenv("OP_CONNECT_TOKEN")
-	client, err := onepassword.NewClient(
-		context.TODO(),
-		onepassword.WithServiceAccountToken(token),
-		// TODO: Set the following to your own integration name and version.
-		onepassword.WithIntegrationInfo("Testing 1pass integration", "v1.0.0"),
-	)	
-
-	vaultID := "Private"
-	itemID := "" // super secret item name
-	fieldID := "username"
-	secretID := "credential"
-
-
-	sailpointURL := "https://tamu-sb.api.identitynow.com/"
-	clientID, err := client.Secrets.Resolve(context.Background(), fmt.Sprintf("op://%s/%s/%s",vaultID,itemID,fieldID))
-	if err != nil {
-		log.Fatal("Failed to resolve client ID", "err", err)
-	}
-	clientSecret, err := client.Secrets.Resolve(context.Background(), fmt.Sprintf("op://%s/%s/%s", vaultID, itemID, secretID))
-	if err != nil {
-		log.Fatal("Failed to resolve client secret", "err", err)
-	} 
-	action := "create-transform"
-	payload := "test.json"
 
 	if sailpointURL == "" {
 		log.Fatal("Sailpoint URL is required")
