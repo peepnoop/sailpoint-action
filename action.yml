@@ -1,6 +1,9 @@
 name: 'SailPoint API Action'
 author: "Alec Smith"
 description: 'Interact with SailPoint APIs using SailPoint Golang SDK'
+branding:
+  icon: anchor
+  color: blue
 inputs:
   instance_url:
     description: 'SailPoint instance URL: https://{tenant}.api.identitynow.com'
